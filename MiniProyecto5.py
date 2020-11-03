@@ -6,11 +6,11 @@ CLOCKWISE = -1
 COUNTERCLOCKWISE = 1
 
 ### Puntos para las funciones de entrada Crisp
-PUNTOS_ESTA_CERCA = [(0,1),(10,1),(120,0),(200,0)]
-PUNTOS_ESTA_LEJOS = [(0,0),(40,0),(100,1),(200,1)]
+PUNTOS_ESTA_CERCA = [(0,1),(10,1),(190,0),(200,0)]
+PUNTOS_ESTA_LEJOS = [(0,0),(10,0),(190,1),(200,1)]
 
-PUNTOS_ESTA_VIENDO_DIRECTO = [(0,1),(20,1),(90,0),(180,0)]
-PUNTOS_ESTA_VIENDO_LADO_CONTRARIO = [(0,0),(20,0),(100,1),(180,1)]
+PUNTOS_ESTA_VIENDO_DIRECTO = [(0,1),(20,1),(160,0),(180,0)]
+PUNTOS_ESTA_VIENDO_LADO_CONTRARIO = [(0,0),(20,0),(160,1),(180,1)]
 
 ### Puntos para las funciones de salida Crisp
 PUNTOS_MOVERSE_POCO = [(0,1),(2,1),(4,0),(5,0)]
@@ -190,13 +190,13 @@ def fuzzyDistancia(dPelota, rPelota):
     xs = np.linspace(0, 5, 100)
     ys = [output_difuso_distancia(dPelota, rPelota, x) for x in xs]
 
-    return np.sum(xs * ys) / np.sum(xs) 
+    return np.sum(xs * ys) / np.sum(ys) 
 
 def fuzzyRotacion(dPelota, rPelota):
     xs = np.linspace(0, 10, 100)
     ys = [output_difuso_distancia(dPelota, rPelota, x) for x in xs]
 
-    return np.sum(xs * ys) / np.sum(xs) 
+    return np.sum(xs * ys) / np.sum(ys) 
 
 ### Main para la simulacion
 ANCHO_PORTERIA = 15
@@ -204,8 +204,8 @@ LARGO_CANCHA = 200
 ANCHO_CANCHA = 100
 METIO_GOL = False
 
-POSICION_INICIAL_ROBOT = (random.randint(10,LARGO_CANCHA - 10),random.randint(10,ANCHO_CANCHA - 10))
-POSICION_INICIAL_PELOTA = (random.randint(20,LARGO_CANCHA - 20),random.randint(20,ANCHO_CANCHA - 20))
+POSICION_INICIAL_ROBOT = (random.randint(0,LARGO_CANCHA),random.randint(0,ANCHO_CANCHA))
+POSICION_INICIAL_PELOTA = (random.randint(0,LARGO_CANCHA),random.randint(0,ANCHO_CANCHA))
 DIRECCION_INICIAL_ROBOT = random.randint(0,359)
 POSICION_INICIAL_PORTERIA = (200, 50)
 
@@ -213,7 +213,7 @@ POSICION_INICIAL_PORTERIA = (200, 50)
 DISTANCIA_ACTUAL = calcularDistanciaPuntos(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PELOTA)
 
 ### CICLO HASTA QUE EL ROBOT LLEGUE A LA PELOTA A MENOS DE 10 PIXELES
-while (DISTANCIA_ACTUAL > 15) or (not METIO_GOL):
+while (DISTANCIA_ACTUAL > 10) or (not METIO_GOL):
     ### Obtencion de INPUTS
     distanciaARecorrer = calcularDistanciaPuntos(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PELOTA)
     anguloARotar, sentido = calcularAnguloGiro(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PELOTA, DIRECCION_INICIAL_ROBOT)
@@ -253,18 +253,13 @@ while (DISTANCIA_ACTUAL > 15) or (not METIO_GOL):
     ### Calcular si ya podemos salir del ciclo
     DISTANCIA_ACTUAL = calcularDistanciaPuntos(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PELOTA)
 
-    #print(POSICION_INICIAL_ROBOT)
-    #print(POSICION_INICIAL_PELOTA)
-    #print(DIRECCION_INICIAL_ROBOT)
-    #print('##########################################')
-
     ### EN LA UI
     ### En teoria aqui se utilizan los datos actualizados de posicion para mover al robot en la simulacion MIGUEL
     ### VARIABLE DE LA SIGUIENTE POSICION -> POSICION_INICIAL_ROBOT
     ### VARIABLE DEL NUEVO ANGULO AL QUE DEBE DE VER -> DIRECCION_INICIAL_ROBOT
 
     ### Parte Deterministica para lanzar el balon una vez el robot llegue a la pelota
-    if  DISTANCIA_ACTUAL <= 15:
+    if  DISTANCIA_ACTUAL <= 10:
         print('TIRANDO A PORTERIA...')
         POSICION_INICIAL_ROBOT = POSICION_INICIAL_PELOTA
         DIRECCION_INICIAL_ROBOT, DISTANCIA_DISPARO_X = calcularAnguloDisparoYDistanciaX(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PORTERIA)
@@ -295,8 +290,8 @@ while (DISTANCIA_ACTUAL > 15) or (not METIO_GOL):
         else:
             print('AFUERAAA')
             ### Se colocan nuevamente random el robot, la pelota y el angulo al que ve el robot
-            POSICION_INICIAL_ROBOT = (random.randint(10,LARGO_CANCHA - 10),random.randint(10,ANCHO_CANCHA - 10))
-            POSICION_INICIAL_PELOTA = (random.randint(20,LARGO_CANCHA - 20),random.randint(20,ANCHO_CANCHA - 20))
+            POSICION_INICIAL_ROBOT = (random.randint(0,LARGO_CANCHA),random.randint(0,ANCHO_CANCHA))
+            POSICION_INICIAL_PELOTA = (random.randint(0,LARGO_CANCHA),random.randint(0,ANCHO_CANCHA))
             DIRECCION_INICIAL_ROBOT = random.randint(0,359)
             DISTANCIA_ACTUAL = calcularDistanciaPuntos(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PELOTA)
             ### EN LA UI MIGUEL
