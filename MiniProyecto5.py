@@ -1,6 +1,7 @@
 import numpy as np
 import random
 import math
+import pygame
 
 CLOCKWISE = -1
 COUNTERCLOCKWISE = 1
@@ -209,6 +210,214 @@ POSICION_INICIAL_PELOTA = (random.randint(0,LARGO_CANCHA),random.randint(0,ANCHO
 DIRECCION_INICIAL_ROBOT = random.randint(0,359)
 POSICION_INICIAL_PORTERIA = (200, 50)
 
+# Datos Pygame
+pygame.init()
+screen = pygame.display.set_mode((LARGO_CANCHA * 3, ANCHO_CANCHA * 3))
+pygame.display.set_caption("Mini_Proyecto5")
+icon = pygame.image.load('video-game.png')
+campo = pygame.image.load('test.png')
+ball = pygame.image.load('football-ball.png')
+playerOG = pygame.image.load('right-arrow.png')
+player = playerOG
+ball = pygame.transform.scale(ball, (int(ANCHO_CANCHA / 10) * 3, int(ANCHO_CANCHA / 10) * 3))
+player = pygame.transform.scale(player, (int(ANCHO_CANCHA / 10) * 3, int(ANCHO_CANCHA / 10) * 3))
+campo = pygame.transform.scale(campo, (LARGO_CANCHA * 3, ANCHO_CANCHA * 3))
+
+ballX = POSICION_INICIAL_PELOTA[0]
+ballY = POSICION_INICIAL_PELOTA[1]
+
+playerX = POSICION_INICIAL_ROBOT[0]
+playerY = POSICION_INICIAL_ROBOT[1]
+
+playerA = DIRECCION_INICIAL_ROBOT
+
+
+### Funciones para Pygame
+def moverJugador(x1, y1, x2, y2):
+    global playerX
+    global playerY
+    #print("Original Moviendo Robot x1,y1 = (", x1, ",", y1, ") a (", x2, ",", y2, ")")
+    x2 = round(x2, 1) * 3
+    y2 = round(y2, 1) * 3
+    x1 = round(x1, 1) * 3
+    y1 = round(y1, 1) * 3
+    if (abs(x2-x1) > 2 and abs(y2-y1) > 2):
+        print("Moviendo Robot x1,y1 = (", x1, ",", y1, ") a (", x2, ",", y2, ")")
+        stepX = 0
+        stepY = 0
+
+        difx = x2 - x1
+        dify = y2 - y1
+        c = math.sqrt((dify) ** 2 + (difx) ** 2)
+        decX = 1
+        decY = 1
+
+        tempX = cantCeros(difx / c)
+        tempX += 1
+        decX = (difx / c) / (10 ** (tempX - 1))
+
+        tempY = cantCeros(dify / c)
+        tempY += 1
+        decY = (dify / c) / (10 ** (tempY - 1))
+
+        if (x2 > x1):
+            stepX = abs(decX)
+            condX = 0
+        elif (x2 < x1):
+            stepX = abs(decX) * -1
+            condX = 1
+
+        if (y2 > y1):
+            stepY = abs(decY)
+            condY = 0
+        elif (y2 < y1):
+            stepY = abs(decY) * -1
+            condY = 1
+
+        verificacionX = False
+        verificacionY = False
+        print("Using stepX:", stepX, " stepY:", stepY)
+        print("Using tempX:", tempX - 1, " tempY:", tempY - 1)
+        # while((round(x1,tempX-1) != round(x2,tempX-1)) or (round(y1,tempY-1) != round(y2,tempY-1))):
+        while (not (verificacionX) or not (verificacionY)):
+            # print(round(x1, tempX - 1), ",", round(y1, tempY - 1), " to ", round(x2, tempX - 1), ",", round(y2, tempY - 1))
+            # if(round(x1,tempX-1) == round(x2,tempX-1)):
+            if ((condX == 0 and x1 >= x2) or (condX == 1 and x1 <= x2)):
+                stepX = 0
+                verificacionX = True
+            # if(round(y1,tempY-1) == round(y2,tempY-1)):
+            if ((condY == 0 and y1 >= y2) or (condY == 1 and y1 <= y2)):
+                stepY = 0
+                verificacionY = True
+            x1 += stepX
+            y1 += stepY
+            screen.blit(campo, (0, 0))
+            screen.blit(ball, (ballX*3, ballY*3))
+            screen.blit(player, (x1, y1))
+            pygame.display.update()
+        playerX = x1 / 3
+        playerY = y1 / 3
+        print("Se movio el robot")
+
+
+def moverPelota(x1, y1, x2, y2):
+    global ballX
+    global ballY
+    print("Original Moviendo pelota x1,y1 = (", x1, ",", y1, ") a (", x2, ",", y2, ")")
+    x2 = round(x2, 1) * 3
+    y2 = round(y2, 1) * 3
+    x1 = round(x1, 1) * 3
+    y1 = round(y1, 1) * 3
+    if (abs(x2-x1) > 2 and abs(y2-y1) > 2):
+        print("Moviendo pelota x1,y1 = (", x1, ",", y1, ") a (", x2, ",", y2, ")")
+        stepX = 0
+        stepY = 0
+
+        difx = x2 - x1
+        dify = y2 - y1
+        c = math.sqrt((dify) ** 2 + (difx) ** 2)
+        decX = 1
+        decY = 1
+
+        tempX = cantCeros(difx / c)
+        tempX += 1
+        decX = (difx / c) / (10 ** (tempX - 1))
+
+        tempY = cantCeros(dify / c)
+        tempY += 1
+        decY = (dify / c) / (10 ** (tempY - 1))
+
+        if (x2 > x1):
+            stepX = abs(decX)
+            condX = 0
+        elif (x2 < x1):
+            stepX = abs(decX) * -1
+            condX = 1
+
+        if (y2 > y1):
+            stepY = abs(decY)
+            condY = 0
+        elif (y2 < y1):
+            stepY = abs(decY) * -1
+            condY = 1
+
+        verificacionX = False
+        verificacionY = False
+        print("Using stepX:", stepX, " stepY:", stepY)
+        print("Using tempX:", tempX - 1, " tempY:", tempY - 1)
+        # while((round(x1,tempX-1) != round(x2,tempX-1)) or (round(y1,tempY-1) != round(y2,tempY-1))):
+        while (not (verificacionX) or not (verificacionY)):
+            # print(round(x1,tempX-1),",",round(y1,tempY-1)," to ",round(x2,tempX-1),",",round(y2,tempY-1))
+            # if(round(x1,tempX-1) == round(x2,tempX-1)):
+            if ((condX == 0 and x1 >= x2) or (condX == 1 and x1 <= x2)):
+                stepX = 0
+                verificacionX = True
+            # if(round(y1,tempY-1) == round(y2,tempY-1)):
+            if ((condY == 0 and y1 >= y2) or (condY == 1 and y1 <= y2)):
+                stepY = 0
+                verificacionY = True
+            x1 += stepX
+            y1 += stepY
+            screen.blit(campo, (0, 0))
+            screen.blit(ball, (x1, y1))
+            screen.blit(player, (playerX*3, playerY*3))
+            pygame.display.update()
+        ballX = x1 / 3
+        ballY = y1 / 3
+        print("Se movio la pelota")
+
+def rotarJugador(inicio, fin):
+    print(inicio,":",fin)
+    global player
+    global playerA
+    global rect
+    inicio = round(inicio)
+    fin = round(fin)
+    #inicio += -90
+    #fin += -90
+    if (inicio <= fin):
+        step = 0.1
+    if (inicio > fin):
+        step = -0.1
+    turn = True
+    while (turn):
+        inicio = (inicio + step) % 360
+        player = pygame.transform.rotate(playerOG, inicio-90)
+        screen.blit(campo, (0, 0))
+        screen.blit(player, (playerX*3,playerY*3))
+        print(inicio)
+        if ((step == 0.1 and round(inicio) > fin) or (step == -0.1 and round(inicio) < fin)):
+            turn = False
+        pygame.display.update()
+    playerA = inicio
+
+
+
+def juegoInicio():
+    print(POSICION_INICIAL_PELOTA)
+    player = pygame.transform.rotate(playerOG, DIRECCION_INICIAL_ROBOT-90)
+    screen.blit(campo, (0, 0))
+    screen.blit(ball, (POSICION_INICIAL_PELOTA[0]*3,POSICION_INICIAL_PELOTA[1]*3))
+    screen.blit(player, (POSICION_INICIAL_ROBOT[0]*3, POSICION_INICIAL_ROBOT[1]*3))
+    pygame.display.update()
+
+
+def cantCeros(x):
+    x = str(x)
+    # print(x)
+    temp = x.split("0.")
+    # print(temp[1])
+    c = 0
+    for i in temp:
+        if (i == "0"):
+            c += 1
+    return c
+
+
+### Inicio Juego
+
+juegoInicio()
+
 ### Prmero se calcula la distancia y rotacion a la que estamos
 DISTANCIA_ACTUAL = calcularDistanciaPuntos(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PELOTA)
 
@@ -255,11 +464,14 @@ while (DISTANCIA_ACTUAL > 10) or (not METIO_GOL):
 
     ### EN LA UI
     ### En teoria aqui se utilizan los datos actualizados de posicion para mover al robot en la simulacion MIGUEL
-    ### VARIABLE DE LA SIGUIENTE POSICION -> POSICION_INICIAL_ROBOT
-    ### VARIABLE DEL NUEVO ANGULO AL QUE DEBE DE VER -> DIRECCION_INICIAL_ROBOT
+
 
     ### Parte Deterministica para lanzar el balon una vez el robot llegue a la pelota
     if  DISTANCIA_ACTUAL <= 10:
+        ### VARIABLE DEL NUEVO ANGULO AL QUE DEBE DE VER -> DIRECCION_INICIAL_ROBOT
+        rotarJugador(playerA, DIRECCION_INICIAL_ROBOT)
+        ### VARIABLE DE LA SIGUIENTE POSICION -> POSICION_INICIAL_ROBOT
+        moverJugador(playerX, playerY, POSICION_INICIAL_PELOTA[0], POSICION_INICIAL_PELOTA[1])
         print('TIRANDO A PORTERIA...')
         POSICION_INICIAL_ROBOT = POSICION_INICIAL_PELOTA
         DIRECCION_INICIAL_ROBOT, DISTANCIA_DISPARO_X = calcularAnguloDisparoYDistanciaX(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PORTERIA)
@@ -279,9 +491,12 @@ while (DISTANCIA_ACTUAL > 10) or (not METIO_GOL):
             POSICION_INICIAL_PELOTA = (200, POSICION_INICIAL_PELOTA[1] +  DESPLAZAMIENTO_Y_PELOTA)
 
         ### EN LA UI MIGUEL
-        ### POSICIONAR ROBOT EN {POSICION_INICIAL_ROBOT}
         ### PONER A VER AL ROBOT EN LA DIRECCION {DIRECCION_INICIAL_ROBOT}
+        rotarJugador(playerA, DIRECCION_INICIAL_ROBOT)
+        ### POSICIONAR ROBOT EN {POSICION_INICIAL_ROBOT}
+        moverJugador(playerX, playerY, POSICION_INICIAL_ROBOT[0], POSICION_INICIAL_ROBOT[1])
         ### MOVER LA PELOTA A {POSICION_INICIAL_PELOTA}
+        moverPelota(ballX, ballY, POSICION_INICIAL_PELOTA[0], POSICION_INICIAL_PELOTA[1])
 
         ### Si echa gol terminar simulacion
         if (POSICION_INICIAL_PELOTA[1] > (POSICION_INICIAL_PORTERIA[1] - ANCHO_PORTERIA)) and (POSICION_INICIAL_PELOTA[1] < (POSICION_INICIAL_PORTERIA[1] + ANCHO_PORTERIA)):
@@ -295,8 +510,12 @@ while (DISTANCIA_ACTUAL > 10) or (not METIO_GOL):
             DIRECCION_INICIAL_ROBOT = random.randint(0,359)
             DISTANCIA_ACTUAL = calcularDistanciaPuntos(POSICION_INICIAL_ROBOT, POSICION_INICIAL_PELOTA)
             ### EN LA UI MIGUEL
-            ### SIMULAR EL MOVIMIENTO DEL ROBOT A SU NUEVO SITIO
-            ### SIMULAR EL MOVIMIENTO DE LA PELOTA A SU NUVEO SITIO
             ### GIRAR AL ROBOT A SU NUEVO ANGULO DE GIRO
+            rotarJugador(playerA, DIRECCION_INICIAL_ROBOT)
+            ### SIMULAR EL MOVIMIENTO DEL ROBOT A SU NUEVO SITIO
+            moverJugador(playerX, playerY, POSICION_INICIAL_ROBOT[0], POSICION_INICIAL_ROBOT[1])
+            ### SIMULAR EL MOVIMIENTO DE LA PELOTA A SU NUVEO SITIO
+            moverPelota(ballX, ballY, POSICION_INICIAL_PELOTA[0], POSICION_INICIAL_PELOTA[1])
+
 
 print("FIN SIMULACION")
