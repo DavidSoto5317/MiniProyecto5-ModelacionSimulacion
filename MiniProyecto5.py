@@ -1,3 +1,7 @@
+#Universidad del Valle de Guatemala
+#David Soto #17551
+#Miguel Valle #17102
+
 import numpy as np
 import random
 import math
