@@ -373,20 +373,26 @@ def rotarJugador(inicio, fin):
     global rect
     inicio = round(inicio)
     fin = round(fin)
+    if fin < 0:
+        fin = 360 - fin
     #inicio += -90
     #fin += -90
     if (inicio <= fin):
-        step = 0.1
+        step = 1
     if (inicio > fin):
-        step = -0.1
+        step = -1
     turn = True
+    temp = 0
     while (turn):
-        inicio = (inicio + step) % 360
-        player = pygame.transform.rotate(playerOG, inicio-90)
+        inicio = (inicio + step) % 361
+        player = pygame.transform.rotate(playerOG, inicio)
         screen.blit(campo, (0, 0))
-        screen.blit(player, (playerX*3,playerY*3))
-        print(inicio)
-        if ((step == 0.1 and round(inicio) > fin) or (step == -0.1 and round(inicio) < fin)):
+        temp = player.get_rect()
+        temp.center = (playerX * 3, playerY * 3)
+        screen.blit(ball, (ballX * 3, ballY * 3))
+        screen.blit(player, temp)
+        #print(inicio)
+        if ((step == 1 and round(inicio) >= fin) or (step == -1 and round(inicio) <= fin)):
             turn = False
         pygame.display.update()
     playerA = inicio
